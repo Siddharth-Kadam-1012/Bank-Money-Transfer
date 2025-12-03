@@ -35,7 +35,7 @@ namespace BankingTransaction.Services
                 Status = user.Status.ToString()
             };
         }
-        public async Task<UserDTO> GetAccountByAccountNo(string accountNo)
+        public async Task<UserDTO> GetAccountByAccountNo(long accountNo)
         {
             var user = await _context.Users
                 .Where(u => u.AccountNumber == accountNo)
@@ -56,7 +56,7 @@ namespace BankingTransaction.Services
             return toUserDTO(user);
         }
         
-        public async Task<bool> DeleteAccountAsync(string accountNo)
+        public async Task<bool> DeleteAccountAsync(long accountNo)
         {
             var user = await _context.Users
                 .Where(u => u.AccountNumber == accountNo)
@@ -70,8 +70,13 @@ namespace BankingTransaction.Services
             return true;
         }
 
-        public async Task<UpdateAccountResponse> UpdateUserAsync(string accountNo,UpdateAccountRequest request)
+        public async Task<UpdateAccountResponse> UpdateUserAsync(long accountNo,UpdateAccountRequest request)
         {
+            if (request == null)
+            {
+                return new UpdateAccountResponse { message = "Invalid request" };
+            }
+
             var user = await _context.Users
               .Where(u => u.AccountNumber == accountNo).FirstOrDefaultAsync();
             if (user == null)
@@ -81,29 +86,36 @@ namespace BankingTransaction.Services
                     message = "User Not Found"
                 };
             }
-            else if (!EmailRegex.IsMatch(request.Email) && request.Email != null)
+
+            // Validate email only if provided
+            if (!string.IsNullOrWhiteSpace(request.Email) && !EmailRegex.IsMatch(request.Email))
             {
                 return new UpdateAccountResponse
                 {
                     message = "Invalid Email!"
                 };
             }
-            else if (request.FirstName.Length <= 0 || request.FirstName.Length >= 20)
+
+            // Validate first name
+            if (string.IsNullOrWhiteSpace(request.FirstName) || request.FirstName.Length >= 20)
             {
                 return new UpdateAccountResponse
                 {
                     message = "Invalid First Name"
                 };
-              
             }
-            else if (request.LastName.Length <= 0 || request.LastName.Length >= 20)
+
+            // Validate last name
+            if (string.IsNullOrWhiteSpace(request.LastName) || request.LastName.Length >= 20)
             {
                 return new UpdateAccountResponse
                 {
                     message = "Invalid Last Name"
                 };
             }
-            else if (!PasswordPolicyRegex.IsMatch(request.Password))
+
+            // Validate password
+            if (string.IsNullOrEmpty(request.Password) || !PasswordPolicyRegex.IsMatch(request.Password))
             {
                 return new UpdateAccountResponse
                 {
@@ -111,20 +123,21 @@ namespace BankingTransaction.Services
                 };
             }
 
-            if (user.Email != request.Email)
+            if (!string.Equals(user.Email, request.Email, StringComparison.OrdinalIgnoreCase))
             {
-                bool emailExists = await _context.Users.AnyAsync(u => u.Email.ToLower() == request.Email.ToLower());
-                if (emailExists)
+                if (!string.IsNullOrWhiteSpace(request.Email))
                 {
-                    return new UpdateAccountResponse
+                    bool emailExists = await _context.Users.AnyAsync(u => u.Email.ToLower() == request.Email.ToLower());
+                    if (emailExists)
                     {
-                        message = "Email Already Exists"
-                    };
-                   
+                        return new UpdateAccountResponse
+                        {
+                            message = "Email Already Exists"
+                        };
+                    }
                 }
-
-
             }
+
             // Update fields
             user.FirstName = request.FirstName ;
             user.LastName = request.LastName ;
@@ -147,19 +160,50 @@ namespace BankingTransaction.Services
         }
 
 
+        private static readonly Random _random = new Random();
+        private long GenerateRandom10Digit()
+        {
+            // Generate number between 1_000_000_000 and 9_999_999_999 inclusive
+            lock (_random)
+            {
+                long value = (long)(_random.NextDouble() * 9_000_000_000L) + 1_000_000_000L;
+                return value;
+            }
+        }
+
+        private async Task<long> GenerateUniqueAccountNumberAsync()
+        {
+            // Try until unique found; should be fast for low volume
+            for (int i = 0; i < 10; i++)
+            {
+                var candidate = GenerateRandom10Digit();
+                bool exists = await _context.Users.AnyAsync(u => u.AccountNumber == candidate);
+                if (!exists) return candidate;
+            }
+            // Fallback deterministic attempt
+            long fallback;
+            do
+            {
+                fallback = GenerateRandom10Digit();
+            }
+            while (await _context.Users.AnyAsync(u => u.AccountNumber == fallback));
+
+            return fallback;
+        }
+
         public async Task<CreateUserResponse> CreateUserAsync(CreateUserRequest request)
         {
             String message = "Account Created Successfully";
             bool isAccountCredValid = true;
 
             // Basic null check
-            if (request.FirstName == null || request.LastName == null || request.Email == null || request.Password == null || request.AccountNumber == null)
+            if (request.FirstName == null || request.LastName == null || request.Email == null || request.Password == null)
             {
                 message = "Incomplte Data! Null Value Found";
                 isAccountCredValid = false;
             }
 
-            // Validate account number format
+            // Validate fields
             else if (request.FirstName.Length <= 0 || request.FirstName.Length >= 20)
             {
                 message = "Invalid First Name";
@@ -176,13 +220,6 @@ namespace BankingTransaction.Services
                 isAccountCredValid = false;
             }
 
-
-            else if (!AccountRegex.IsMatch(request.AccountNumber))
-            {
-                message = "Invalid Account Number";
-                isAccountCredValid = false;
-            }
-
             else if (!PasswordPolicyRegex.IsMatch(request.Password))
             {
                 message = "Invalid Password! Password must be at least 8 characters and include uppercase, lowercase, digit and special character.";
@@ -192,27 +229,17 @@ namespace BankingTransaction.Services
 
             bool emailExists = await _context.Users.AnyAsync(u => u.Email.ToLower() == request.Email.ToLower());
 
-            // Check account number uniqueness
-            bool accExists = await _context.Users.AnyAsync(u => u.AccountNumber == request.AccountNumber);
-
             if (emailExists)
             {
                 message = "Email Already Exists";
                 isAccountCredValid = false;
 
             }
-
-
-            else if (accExists)
-            {
-                message = "Account Already Exists";
-                isAccountCredValid = false;
-            }
             
-            // Validate initial balance non-negative (DTO has Range, but re-check)
-            if (request.InitialBalance < 0 || request.InitialBalance  > 10000)
+            // Validate initial balance non-negative
+            if (request.InitialBalance < 2000 || request.InitialBalance  > 1000000)
             {
-                message = "Initial Balance Cannot Be Negative";
+                message = "Initial Balance Must Be Between 2000 and 1000000 ";
                 isAccountCredValid = false;
             }
             if (isAccountCredValid == false)
@@ -226,13 +253,15 @@ namespace BankingTransaction.Services
             {
                 try
                 {
+                    var accountNumber = await GenerateUniqueAccountNumberAsync();
+
                     // Create User entity
                     var user = new BankingTransaction.Data.Model.User
                     {
                         FirstName = request.FirstName,
                         LastName = request.LastName,
                         Email = request.Email.Trim(),
-                        AccountNumber = request.AccountNumber,
+                        AccountNumber = accountNumber,
                         Balance = request.InitialBalance,
                         CreatedAt = DateTime.UtcNow,
                         Status = BankingTransaction.Data.Model.AccountStatus.Active,
@@ -265,13 +294,9 @@ namespace BankingTransaction.Services
 
             }
 
-            
-
-            
         }
 
 
-     
 
     }
 }

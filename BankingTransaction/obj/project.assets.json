@@ -4453,23 +4453,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\SiddharthKadam\\.nuget\\packages\\": {},
+    "C:\\Users\\SrinidhiVs\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\SiddharthKadam\\source\\repos\\BankingTransaction\\BankingTransaction\\BankingTransaction.csproj",
+      "projectUniqueName": "C:\\Users\\SrinidhiVs\\Desktop\\desk\\moneytranfer\\Bank-Money-Transfer\\BankingTransaction\\BankingTransaction.csproj",
       "projectName": "BankingTransaction",
-      "projectPath": "C:\\Users\\SiddharthKadam\\source\\repos\\BankingTransaction\\BankingTransaction\\BankingTransaction.csproj",
-      "packagesPath": "C:\\Users\\SiddharthKadam\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\SiddharthKadam\\source\\repos\\BankingTransaction\\BankingTransaction\\obj\\",
+      "projectPath": "C:\\Users\\SrinidhiVs\\Desktop\\desk\\moneytranfer\\Bank-Money-Transfer\\BankingTransaction\\BankingTransaction.csproj",
+      "packagesPath": "C:\\Users\\SrinidhiVs\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\SrinidhiVs\\Desktop\\desk\\moneytranfer\\Bank-Money-Transfer\\BankingTransaction\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\SiddharthKadam\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\SrinidhiVs\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -4496,7 +4496,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "10.0.100"
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
       "net8.0": {
@@ -4546,7 +4546,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.100/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.308/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

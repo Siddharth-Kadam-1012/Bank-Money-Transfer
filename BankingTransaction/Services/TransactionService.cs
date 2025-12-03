@@ -30,7 +30,7 @@ namespace BankingTransaction.Services
                 FromAccountId = t.FromAccountId,
                 ToAccountId = t.ToAccountId,
                 Amount = t.Amount,
-                Status = t.status.ToString(),
+                //Status = t.status.ToString(),
                 //InitiatedAt = t.InitiatedAt,
                 CompletedAt = t.CompletedAt,
                 FailureReason = t.FailureReason
@@ -38,10 +38,10 @@ namespace BankingTransaction.Services
         }
 
         public async Task<(bool Success, string Message, List<TransactionDto> Data)>
-            GetTransactionsByAccountNumberAsync(string accountNumber)
+            GetTransactionsByAccountNumberAsync(long accountNumber)
         {
-
-            if (!AccountRegex.IsMatch(accountNumber))
+            var accountNumberStr = accountNumber.ToString();
+            if (!AccountRegex.IsMatch(accountNumberStr))
                 return (false, "Invalid account number", null);
             
 
@@ -68,7 +68,9 @@ namespace BankingTransaction.Services
 
            
             
-            if (!AccountRegex.IsMatch(request.FromAccountNumber) || !AccountRegex.IsMatch(request.ToAccountNumber))
+            var fromAcctStr = request.FromAccountNumber.ToString();
+            var toAcctStr = request.ToAccountNumber.ToString();
+            if (!AccountRegex.IsMatch(fromAcctStr) || !AccountRegex.IsMatch(toAcctStr))
                 return new TransferResponse { Success = false, Message = "Invalid account number" };
 
             if (request.FromAccountNumber== request.ToAccountNumber)
@@ -127,4 +129,4 @@ namespace BankingTransaction.Services
             }
         }
     }
-    }
+}
