@@ -210,9 +210,9 @@ namespace BankingTransaction.Services
             }
             
             // Validate initial balance non-negative (DTO has Range, but re-check)
-            if (request.InitialBalance < 0 || request.InitialBalance  > 10000)
+            if (request.InitialBalance < 2000 || request.InitialBalance  > 10000)
             {
-                message = "Initial Balance Cannot Be Negative";
+                message = "Initial balance cannot be less than 2000 or greater than 10000";
                 isAccountCredValid = false;
             }
             if (isAccountCredValid == false)
