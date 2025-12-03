@@ -17,6 +17,10 @@ namespace BankingTransaction.Data.ViewModel
         [StringLength(20)]
         public string Email { get; set; }
 
+        [Required]
+        public string Password { get; set; }
+
+
 
 
     }

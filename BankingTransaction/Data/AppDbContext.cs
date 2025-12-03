@@ -24,18 +24,18 @@ namespace BankingTransaction.Data
 
                 entity.Property(u => u.Id)
                       .IsRequired()
-                      .HasMaxLength(50);
+                      .HasMaxLength(20);
 
                 entity.Property(u => u.FirstName)
                       .IsRequired()
-                      .HasMaxLength(100);
+                      .HasMaxLength(20);
 
                 entity.Property(u => u.LastName)
-                      .HasMaxLength(100);
+                      .HasMaxLength(20);
 
                 entity.Property(u => u.Email)
                       .IsRequired()
-                      .HasMaxLength(200);
+                      .HasMaxLength(20);
 
                 entity.HasIndex(u => u.Email)
                       .IsUnique(); // ensure unique emails
@@ -44,7 +44,7 @@ namespace BankingTransaction.Data
                       .IsRequired();
                 entity.Property(a => a.AccountNumber)
                       .IsRequired()
-                      .HasMaxLength(64);
+                      .HasMaxLength(11);
 
                 entity.Property(a => a.Balance)
                       .HasColumnType("decimal(18,2)");

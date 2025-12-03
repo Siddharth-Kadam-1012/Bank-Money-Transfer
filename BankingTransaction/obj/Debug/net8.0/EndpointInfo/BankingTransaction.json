@@ -246,7 +246,8 @@
         "required": [
           "email",
           "firstName",
-          "lastName"
+          "lastName",
+          "password"
         ],
         "type": "object",
         "properties": {
@@ -265,6 +266,10 @@
             "minLength": 0,
             "type": "string",
             "format": "email"
+          },
+          "password": {
+            "minLength": 1,
+            "type": "string"
           }
         },
         "additionalProperties": false

@@ -88,12 +88,50 @@ namespace BankingTransaction.Services
                     message = "Invalid Email!"
                 };
             }
-                // Update fields
-                user.FirstName = request.FirstName ;
+            else if (request.FirstName.Length <= 0 || request.FirstName.Length >= 20)
+            {
+                return new UpdateAccountResponse
+                {
+                    message = "Invalid First Name"
+                };
+              
+            }
+            else if (request.LastName.Length <= 0 || request.LastName.Length >= 20)
+            {
+                return new UpdateAccountResponse
+                {
+                    message = "Invalid Last Name"
+                };
+            }
+            else if (!PasswordPolicyRegex.IsMatch(request.Password))
+            {
+                return new UpdateAccountResponse
+                {
+                    message = "Invalid Password! Password must be at least 8 characters and include uppercase, lowercase, digit and special character."
+                };
+            }
+
+            if (user.Email != request.Email)
+            {
+                bool emailExists = await _context.Users.AnyAsync(u => u.Email.ToLower() == request.Email.ToLower());
+                if (emailExists)
+                {
+                    return new UpdateAccountResponse
+                    {
+                        message = "Email Already Exists"
+                    };
+                   
+                }
+
+
+            }
+            // Update fields
+            user.FirstName = request.FirstName ;
             user.LastName = request.LastName ;
            
             user.Email = request.Email;
 
+            user.Password = request.Password;
             await _context.SaveChangesAsync();
             return new UpdateAccountResponse
             {
@@ -101,6 +139,8 @@ namespace BankingTransaction.Services
                 FirstName = user.FirstName 
                 , LastName = user.LastName,
                 Email = user.Email,
+                Password = user.Password,
+                
                 message = "Details Updated Successfully"
             };
 
@@ -120,12 +160,12 @@ namespace BankingTransaction.Services
             }
 
             // Validate account number format
-            else if (request.FirstName.Length == 0)
+            else if (request.FirstName.Length <= 0 || request.FirstName.Length >= 20)
             {
                 message = "Invalid First Name";
                 isAccountCredValid = false;
             }
-            else if (request.LastName.Length == 0)
+            else if (request.LastName.Length <= 0 || request.LastName.Length >= 20)
             {
                 message = "Invalid Last Name";
                 isAccountCredValid = false;
@@ -149,6 +189,7 @@ namespace BankingTransaction.Services
                 isAccountCredValid = false;
             }
 
+
             bool emailExists = await _context.Users.AnyAsync(u => u.Email.ToLower() == request.Email.ToLower());
 
             // Check account number uniqueness
@@ -169,7 +210,7 @@ namespace BankingTransaction.Services
             }
             
             // Validate initial balance non-negative (DTO has Range, but re-check)
-            if (request.InitialBalance < 0)
+            if (request.InitialBalance < 0 || request.InitialBalance  > 10000)
             {
                 message = "Initial Balance Cannot Be Negative";
                 isAccountCredValid = false;
