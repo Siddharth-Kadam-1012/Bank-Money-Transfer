@@ -16,7 +16,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int64"
             }
           }
         ],
@@ -69,7 +70,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int64"
             }
           }
         ],
@@ -110,7 +112,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int64"
             }
           }
         ],
@@ -132,7 +135,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int64"
             }
           }
         ],
@@ -179,7 +183,6 @@
     "schemas": {
       "CreateUserRequest": {
         "required": [
-          "accountNumber",
           "email",
           "firstName",
           "lastName",
@@ -207,11 +210,6 @@
             "minLength": 8,
             "type": "string"
           },
-          "accountNumber": {
-            "maxLength": 10,
-            "minLength": 10,
-            "type": "string"
-          },
           "initialBalance": {
             "minimum": 0,
             "type": "number",
@@ -224,20 +222,16 @@
         "type": "object",
         "properties": {
           "fromAccountNumber": {
-            "type": "string",
-            "nullable": true
+            "type": "integer",
+            "format": "int64"
           },
           "toAccountNumber": {
-            "type": "string",
-            "nullable": true
+            "type": "integer",
+            "format": "int64"
           },
           "amount": {
             "type": "number",
             "format": "double"
-          },
-          "remarks": {
-            "type": "string",
-            "nullable": true
           }
         },
         "additionalProperties": false

@@ -39,13 +39,11 @@ namespace BankingTransaction.Migrations
                     b.Property<string>("FailureReason")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FromAccountId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<long>("FromAccountId")
+                        .HasColumnType("bigint");
 
-                    b.Property<string>("ToAccountId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<long>("ToAccountId")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("status")
                         .HasColumnType("int");
@@ -64,10 +62,9 @@ namespace BankingTransaction.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AccountNumber")
-                        .IsRequired()
+                    b.Property<long>("AccountNumber")
                         .HasMaxLength(11)
-                        .HasColumnType("nvarchar(11)");
+                        .HasColumnType("bigint");
 
                     b.Property<decimal>("Balance")
                         .HasColumnType("decimal(18,2)");

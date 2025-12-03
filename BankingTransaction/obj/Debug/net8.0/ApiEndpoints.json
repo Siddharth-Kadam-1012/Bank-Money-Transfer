@@ -9,7 +9,7 @@
     "Parameters": [
       {
         "Name": "accountNumber",
-        "Type": "System.String",
+        "Type": "System.Int64",
         "IsRequired": true
       }
     ],
@@ -57,7 +57,7 @@
     "Parameters": [
       {
         "Name": "accountNumber",
-        "Type": "System.String",
+        "Type": "System.Int64",
         "IsRequired": true
       }
     ],
@@ -73,7 +73,7 @@
     "Parameters": [
       {
         "Name": "accountNumber",
-        "Type": "System.String",
+        "Type": "System.Int64",
         "IsRequired": true
       }
     ],
@@ -89,7 +89,7 @@
     "Parameters": [
       {
         "Name": "accountNumber",
-        "Type": "System.String",
+        "Type": "System.Int64",
         "IsRequired": true
       },
       {
